@@ -11,9 +11,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@covalenthq/client-sdk": "^0.9.7",
     "axios": "^1.6.8",
-    "blockbook-client": "^0.7.8",
     "vue": "^3.4.21"
   },
   "devDependencies": {
