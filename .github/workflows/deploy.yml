@@ -24,9 +24,11 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: front-end
 
       - name: Build
         run: npm run build
+        working-directory: front-end
 
       - name: Deploy
         run: |
@@ -39,3 +41,4 @@ jobs:
           user_email: "github-actions[bot]@users.noreply.github.com"
           github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
           repository: ${{ github.repository }}
+        working-directory: front-end
