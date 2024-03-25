@@ -6,7 +6,7 @@ app = Flask(__name__)
 lock = threading.Lock()
 
 
-@app.route("/output")
+@app.route("/")
 def serve_output():
     with lock:
         with open("output.json", "r", encoding="utf-8") as f:
