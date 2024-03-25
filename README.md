@@ -1,9 +1,8 @@
+# Front-end
+
+Refer to [front-end README](front-end/README.md)
+
 # Indexer
-
-## Description
-
-Only the **indexer** is supposed to work
-The front-end i
 
 ## Initial setup
 
