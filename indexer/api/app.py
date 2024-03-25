@@ -1,8 +1,10 @@
-from flask import Flask, jsonify
 import json
 import threading
+from flask import Flask, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 lock = threading.Lock()
 
 
