@@ -1,0 +1,11 @@
+[MASTER]
+disable=missing-function-docstring
+
+[MESSAGES CONTROL]
+disable=C0114,C0116
+
+[BASIC]
+good-names=i, j, k, ex, Run, _
+
+[FORMAT]
+max-line-length=88
