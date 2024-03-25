@@ -2,7 +2,7 @@
 
 ## Description
 
-Only the indexer is supposed to work
+Only the **indexer** is supposed to work
 The front-end i
 
 ## Initial setup
@@ -30,6 +30,24 @@ make run
 ```bash
 cd indexer
 gunicorn -w 4 -b 0.0.0.0:8000 api.app:app
+```
+
+Example service file
+
+```bash
+[Unit]
+Description=Gunicorn instance for Vogler Indexer API
+After=network.target
+
+[Service]
+User=<user>
+Group=www-data
+WorkingDirectory=/srv/vogler/indexer
+Environment="PATH=/srv/vogler/indexer/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ExecStart=/srv/vogler/indexer/venv/bin/gunicorn --workers 3 --bind unix:/srv/vogler/indexer/api/app.sock api.app:app
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 ### Indexer
