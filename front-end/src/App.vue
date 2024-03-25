@@ -24,7 +24,7 @@ const errorMessage = ref('')
 onMounted(async () => {
   try {
     loading.value = false
-    const url = 'http://api.vogler.nft1.com/'
+    const url = 'https://api.vogler.nft1.com/'
     const response = await axios.get(url)
     creations.value = response.data.creations
   } catch (error) {
