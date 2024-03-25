@@ -8,7 +8,20 @@
     </div>
 
     <div v-else>
-      {{ creations }}
+      <table style="text-align: left">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Owner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="creation in creations" :key="creation.id">
+            <td>{{ creation.name }}</td>
+            <td>{{ creation.owner }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </main>
 </template>
