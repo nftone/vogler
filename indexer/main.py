@@ -8,7 +8,7 @@ lock = threading.Lock()
 
 
 def main():
-    with open("constants/Creations.json", "r", encoding="utf-8") as f:
+    with open("./constants/Creations.json", "r", encoding="utf-8") as f:
         creations_json = json.load(f)
         creations = creations_json["creations"]
         updated_creations = []
@@ -25,7 +25,7 @@ def main():
         output_dict = {"last_update": current_timestamp, "creations": updated_creations}
 
         with lock:
-            with open("output.json", "w", encoding="utf-8") as f:
+            with open("./output.json", "w", encoding="utf-8") as f:
                 json.dump(output_dict, f, indent=4)
 
 
@@ -63,9 +63,9 @@ def get_tx(tx_hash):
     response = requests.get(url, timeout=10)
     if response.status_code == 200:
         return response.json()
-    else:
-        print(f"Error: API request failed with status code {response.status_code}")
-        return None
+
+    print(f"Error: API request failed with status code {response.status_code}")
+    return None
 
 
 main()
