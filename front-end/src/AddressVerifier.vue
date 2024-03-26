@@ -12,6 +12,7 @@
         placeholder="Type Bitcoin address"
         @keyup.enter="onClick"
         @input="onClick"
+        @change="onClick"
       />
       <button @click="onClick">Verify</button>
 
