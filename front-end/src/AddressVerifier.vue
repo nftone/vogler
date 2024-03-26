@@ -4,7 +4,12 @@
     <h2>Address Verifier</h2>
   </div>
   <div>
-    <input v-model="address" type="text" placeholder="Type Bitcoin address" />
+    <input
+      v-model="address"
+      type="text"
+      placeholder="Type Bitcoin address"
+      @keyup.enter="onClick"
+    />
     <button @click="onClick">Verify</button>
     <Creation v-if="foundCreation" :creation="foundCreation" />
     <div style="margin-top: 16px" v-if="errorMessage">{{ errorMessage }}</div>
