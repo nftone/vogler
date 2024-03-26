@@ -2,7 +2,7 @@
 disable=missing-function-docstring
 
 [MESSAGES CONTROL]
-disable=C0114,C0116
+disable=C0114,C0115,C0116
 
 [BASIC]
 good-names=i, j, k, ex, Run, _
