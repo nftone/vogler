@@ -26,7 +26,6 @@ const errorMessage = ref('')
 const foundCreation = ref(null)
 
 const onClick = () => {
-  console.log('clocked')
   errorMessage.value = ''
   foundCreation.value = null
 
