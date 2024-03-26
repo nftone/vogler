@@ -4,25 +4,25 @@
       "name": "Nothing",
       "h": "d5abd1da80839519adad13a5803e86e196a885672c74efe91c9fb4604401a6ca",
       "expectedOwner": "1HAQwLuYoVba5GkEe7VNUuzgQHmnS6B2LC",
-      "image": ""
+      "image": "transparent_square.gif"
     },
     {
       "name": "The number 0",
       "h": "07258933905fb96be10e61a68f47b289dcd6b04b22b5ce276a2c593e83bc236a",
       "expectedOwner": "1FmCRu89Snuk9DZeuskAnEmjbstiWuGvVH",
-      "image": ""
+      "image": "0.gif"
     },
     {
       "name": "The number 1",
       "h": "76a7d228de4a01ad75b2ca8fdd0c7eb009b547eb4a73b04a356c136da2d1259e",
       "expectedOwner": "",
-      "image": ""
+      "image": "1.gif"
     },
     {
       "name": "The number 6653184326643486635834546035076418400106306154239717921 or “Everything is a number!”",
       "h": "14877af871857cc5110532c79865743f744172750ca07d57f344cceae1200c36",
       "expectedOwner": "",
-      "image": ""
+      "image": "numbers.png"
     },
     {
       "name": "Black Square (1 x 1 pixels)",
@@ -34,7 +34,7 @@
       "name": "White Square (1 x 1 pixels)",
       "h": "9f2a4c66d2faf7be3f89b56ef6039574d65511e73571ab4fe296d2811230ad20",
       "expectedOwner": "",
-      "image": ""
+      "image": "transparent_square.gif"
     },
     {
       "name": "Transparent Square (1 x 1 pixels)",
@@ -178,7 +178,7 @@
       "name": "Secret (Unknown)",
       "h": "8369c6d5253de810b596c47577686f206ce27d71c8804433f0321a9a35178744",
       "expectedOwner": "",
-      "image": ""
+      "image": "transparent_square.gif"
     }
   ]
 }
