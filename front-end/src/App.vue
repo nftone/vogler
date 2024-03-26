@@ -8,20 +8,8 @@
     </div>
 
     <div v-else>
-      <table style="text-align: left">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Owner</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="creation in creations" :key="creation.id">
-            <td>{{ creation.name }}</td>
-            <td>{{ creation.owner }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <AddressVerifier :creations="creations" />
+      <!-- <CreationsTable :creations="creations" /> -->
     </div>
   </main>
 </template>
@@ -29,6 +17,8 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import axios from 'axios'
+import AddressVerifier from './AddressVerifier.vue'
+import CreationsTable from './CreationsTable.vue'
 
 const loading = ref(true)
 const creations = ref([])
@@ -48,3 +38,54 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style>
+html {
+  background-color: black;
+  color: white;
+  font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial,
+    'sans-serif';
+}
+
+body {
+  margin: 32px;
+}
+
+h1 {
+  font-weight: 300;
+}
+
+h2 {
+  font-weight: 200;
+}
+
+input[type='text'] {
+  border: 2px solid white; /* White border */
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.3
+  ); /* Transparent dark background. Adjust the last value for more or less transparency */
+  color: white; /* Text color */
+  padding: 10px; /* Some padding inside the input */
+  width: 300px;
+}
+
+input[type='text']::placeholder {
+  color: gray; /* Gray placeholder text */
+}
+
+input[type='text'] + button {
+  background-color: white; /* White background */
+  color: black; /* Black text */
+  border: 2px solid white; /* White border, same as the input */
+  padding: 10px; /* Some padding inside the button */
+  cursor: pointer; /* Change the cursor to a pointer on hover */
+  margin-left: 10px; /* Add some space between the input and the button */
+}
+
+input[type='text'] + button:hover {
+  background-color: #ddd; /* Light gray background on hover */
+}
+</style>
