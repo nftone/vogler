@@ -70,6 +70,13 @@ input[type='text'] {
   color: white; /* Text color */
   padding: 10px; /* Some padding inside the input */
   width: 300px;
+  font-family: 'Consolas', 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
+    Helvetica, Arial, 'sans-serif';
+}
+
+button {
+  font-family: 'Consolas', 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
+    Helvetica, Arial, 'sans-serif';
 }
 
 input[type='text']::placeholder {
@@ -82,7 +89,6 @@ input[type='text'] + button {
   border: 2px solid white; /* White border, same as the input */
   padding: 10px; /* Some padding inside the button */
   cursor: pointer; /* Change the cursor to a pointer on hover */
-  margin-left: 10px; /* Add some space between the input and the button */
 }
 
 input[type='text'] + button:hover {
