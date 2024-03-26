@@ -19,7 +19,7 @@ def main():
             updated_creation_index += 1
             print(f"Processing creation {updated_creation_index}/{len(creations)}")
             owner = find_owner_by_tx_hash(creation["h"])
-            output_creation = {"owner": owner, "name": creation["name"]}
+            output_creation = {"owner": owner, "name": creation["name"], "image": creation["image"]}
             updated_creations.append(output_creation)
 
         output_dict = {"last_update": current_timestamp, "creations": updated_creations}
