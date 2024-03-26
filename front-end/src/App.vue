@@ -18,7 +18,7 @@
 import { onMounted, ref } from 'vue'
 import axios from 'axios'
 import AddressVerifier from './AddressVerifier.vue'
-import CreationsTable from './CreationsTable.vue'
+// import CreationsTable from './CreationsTable.vue'
 
 const loading = ref(true)
 const creations = ref([])
@@ -43,8 +43,8 @@ onMounted(async () => {
 html {
   background-color: black;
   color: white;
-  font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial,
-    'sans-serif';
+  font-family: 'Consolas', 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
+    Helvetica, Arial, 'sans-serif';
 }
 
 body {
