@@ -46,7 +46,7 @@ const onClick = () => {
     return
   }
 
-  const lowerAddress = address.value.toLowerCase()
+  const lowerAddress = address.value.toLowerCase().trim()
 
   const creation = props.creations.find((creation) => {
     return creation.owner.toLowerCase() === lowerAddress
