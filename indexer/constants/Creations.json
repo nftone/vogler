@@ -10,19 +10,19 @@
       "name": "The number 0",
       "h": "07258933905fb96be10e61a68f47b289dcd6b04b22b5ce276a2c593e83bc236a",
       "expectedOwner": "1FmCRu89Snuk9DZeuskAnEmjbstiWuGvVH",
-      "image": "0.gif"
+      "image": "0.png"
     },
     {
       "name": "The number 1",
       "h": "76a7d228de4a01ad75b2ca8fdd0c7eb009b547eb4a73b04a356c136da2d1259e",
       "expectedOwner": "",
-      "image": "1.gif"
+      "image": "1.png"
     },
     {
       "name": "The number 6653184326643486635834546035076418400106306154239717921 or “Everything is a number!”",
       "h": "14877af871857cc5110532c79865743f744172750ca07d57f344cceae1200c36",
       "expectedOwner": "",
-      "image": "numbers.png"
+      "image": "everything.png"
     },
     {
       "name": "Black Square (1 x 1 pixels)",
@@ -171,7 +171,7 @@
     {
       "name": "Face 5 (64 x 64 pixels)",
       "h": "04a9187bea83542976016a38c8a7004a5e9c3b4983520c3246df197a52d248ba",
-      "expectedOwner": "bc1qds0huy4fthugnv2wfx2ujl0lt0a3dzdu2hu4t6",
+      "expectedOwner": "1Ly97QijYbSXT8b4DACgiTsEQdjpX9twD8",
       "image": "face_5.gif"
     },
     {
