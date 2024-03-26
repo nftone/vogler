@@ -18,5 +18,6 @@ defineProps(['creation'])
   width: 200px;
   height: 200px;
   background-color: white;
+  image-rendering: pixelated;
 }
 </style>
