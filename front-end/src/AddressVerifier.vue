@@ -73,8 +73,24 @@ const onClick = () => {
   width: 100px;
 }
 
-.input-area svg {
+.input-area .checkmark-icon {
   width: 38px;
   height: 38px;
+  display: grid;
+  place-content: center;
+}
+
+.input-area .checkmark-icon img {
+  width: 26px;
+  height: 26px;
+  filter: invert(1);
+}
+
+.input-area .checkmark-icon.green {
+  background-color: #00cd27;
+}
+
+.input-area .checkmark-icon.red {
+  background-color: #ff0000;
 }
 </style>
