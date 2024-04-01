@@ -78,6 +78,7 @@ const onClick = () => {
   height: 38px;
   display: grid;
   place-content: center;
+  margin-left: 3px;
 }
 
 .input-area .checkmark-icon img {
