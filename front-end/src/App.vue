@@ -8,7 +8,7 @@
     </div>
 
     <div v-else>
-      <AddressVerifier :creations="creations" />
+      <AddressVerifier />
     </div>
   </main>
 </template>
@@ -19,8 +19,7 @@ import AddressVerifier from './AddressVerifier.vue'
 import useCreations from './composables/useCreations'
 
 const {
-  creations, //
-  creationsErrorMessage,
+  creationsErrorMessage, //
   loadingCreations,
   refreshCreations
 } = useCreations()

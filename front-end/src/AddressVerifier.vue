@@ -4,7 +4,14 @@
     <h2>Address Verifier</h2>
   </div>
 
-  <div>
+  <div v-if="loadingCreations">Loading...</div>
+
+  <div v-else-if="creationsErrorMessage">
+    <h2>Something went wrong</h2>
+    <p>{{ creationsErrorMessage }}</p>
+  </div>
+
+  <div v-else>
     <div class="input-area">
       <input
         v-model="address"
@@ -26,13 +33,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const props = defineProps(['creations'])
+import { onMounted, ref } from 'vue'
+import useCreations from './composables/useCreations'
 
 import Creation from './Creation.vue'
 import GreenCheckmark from './icons/GreenCheckmark.vue'
 import RedCheckmark from './icons/RedCheckmark.vue'
-
+const {
+  creations, //
+  creationsErrorMessage,
+  loadingCreations,
+  refreshCreations
+} = useCreations()
 const address = ref('')
 const errorMessage = ref('')
 const foundCreation = ref(null)
@@ -46,10 +58,18 @@ const onClick = () => {
     return
   }
 
-  const lowerAddress = address.value.toLowerCase().trim()
+  const trimmedAddress = address.value.trim()
 
-  const creation = props.creations.find((creation) => {
-    return creation.owner.toLowerCase() === lowerAddress
+  const url = new URL(window.location.href)
+  url.searchParams.set('address', trimmedAddress)
+  window.history.pushState({}, '', url)
+
+  setOwnedCreations()
+}
+
+const setOwnedCreations = () => {
+  const creation = creations.value.find((creation) => {
+    return creation.owner.toLowerCase() === address.value.toLowerCase()
   })
 
   if (creation) {
@@ -58,6 +78,17 @@ const onClick = () => {
     errorMessage.value = "This address doesn't hold Stephan Vogler artworks"
   }
 }
+
+onMounted(async () => {
+  await refreshCreations({ refreshIfEmpty: true })
+  const url = new URL(window.location.href)
+  const addressFromUrl = url.searchParams.get('address')
+
+  if (addressFromUrl) {
+    address.value = addressFromUrl.trim()
+    setOwnedCreations()
+  }
+})
 </script>
 
 <style>
