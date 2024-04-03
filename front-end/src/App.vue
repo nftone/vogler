@@ -1,42 +1,31 @@
 <template>
   <main>
-    <div v-if="loading">Loading...</div>
+    <div v-if="loadingCreations">Loading...</div>
 
-    <div v-else-if="errorMessage">
+    <div v-else-if="creationsErrorMessage">
       <h2>Something went wrong</h2>
-      <p>{{ errorMessage }}</p>
+      <p>{{ creationsErrorMessage }}</p>
     </div>
 
     <div v-else>
       <AddressVerifier :creations="creations" />
-      <!-- <CreationsTable :creations="creations" /> -->
     </div>
   </main>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import axios from 'axios'
+import { onMounted } from 'vue'
 import AddressVerifier from './AddressVerifier.vue'
-// import CreationsTable from './CreationsTable.vue'
+import useCreations from './composables/useCreations'
 
-const loading = ref(true)
-const creations = ref([])
-const errorMessage = ref('')
+const {
+  creations, //
+  creationsErrorMessage,
+  loadingCreations,
+  refreshCreations
+} = useCreations()
 
-onMounted(async () => {
-  try {
-    loading.value = false
-    const url = 'https://api.vogler.nft1.com/'
-    const response = await axios.get(url)
-    creations.value = response.data.creations
-  } catch (error) {
-    errorMessage.value = error
-    console.error(error)
-  } finally {
-    loading.value = false
-  }
-})
+onMounted(async () => await refreshCreations())
 </script>
 
 <style>
