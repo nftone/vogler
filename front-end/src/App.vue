@@ -89,4 +89,12 @@ input[type='text'] + button:hover {
   -o-user-select: none;
   user-select: none;
 }
+
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
+  text-decoration: none;
+}
 </style>
