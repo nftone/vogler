@@ -115,6 +115,7 @@ onMounted(async () => {
   column-gap: 22px;
 }
 
+.home-menu,
 .creations-grid,
 .introduction {
   max-width: 1760px;
