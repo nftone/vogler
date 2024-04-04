@@ -1,6 +1,8 @@
 <template>
   <div class="home-menu no-select">
-    <h1>Stephan Vogler Artworks (2015)</h1>
+    <RouterLink to="/">
+      <h1>Stephan Vogler Artworks (2015)</h1>
+    </RouterLink>
     <RouterLink to="/verifier">
       <h2 class="address-verifier-link">Address Verifier</h2>
     </RouterLink>
