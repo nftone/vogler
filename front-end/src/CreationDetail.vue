@@ -1,6 +1,8 @@
 <template>
-  <div class="no-select">
-    <h1>Stephan Vogler Artworks (2015)</h1>
+  <div class="creation-detail-header no-select">
+    <RouterLink to="/">
+      <h1>Stephan Vogler Artworks (2015)</h1>
+    </RouterLink>
   </div>
 
   <div v-if="loadingCreations">Loading...</div>
@@ -41,4 +43,9 @@ onMounted(async () => {
 })
 </script>
 
-<style></style>
+<style>
+.creation-detail-header {
+  display: grid;
+  align-items: end;
+}
+</style>

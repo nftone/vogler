@@ -94,7 +94,9 @@ a,
 a:link,
 a:visited,
 a:hover,
-a:active {
+a:active,
+a:-webkit-any-link {
+  color: white;
   text-decoration: none;
 }
 </style>

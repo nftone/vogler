@@ -1,6 +1,10 @@
 <template>
   <div class="no-select">
-    <h1>Stephan Vogler Artworks (2015)</h1>
+    <div class="verifier-header">
+      <RouterLink to="/">
+        <h1>Stephan Vogler Artworks (2015)</h1>
+      </RouterLink>
+    </div>
     <h2>Address Verifier</h2>
   </div>
 
@@ -124,5 +128,10 @@ onMounted(async () => {
 
 .input-area .checkmark-icon.red {
   background-color: #ff0000;
+}
+
+.verifier-header {
+  display: grid;
+  align-items: end;
 }
 </style>
