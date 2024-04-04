@@ -13,13 +13,20 @@
     <p>{{ creationsErrorMessage }}</p>
   </div>
   <div v-else>
-    {{ creations }}
+    <div class="creations-grid">
+      <CreationTile
+        v-for="creation in creations"
+        :key="`creation-tile-${creation.h}`"
+        :creation="creation"
+      />
+    </div>
   </div>
 </template>
 
 <script setup>
 import { onMounted } from 'vue'
 import useCreations from './composables/useCreations'
+import CreationTile from './CreationTile.vue'
 
 const {
   creations, //
@@ -44,5 +51,12 @@ onMounted(async () => {
   cursor: pointer;
   text-align: right;
   padding-bottom: 3px;
+}
+
+.creations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  column-gap: 22px;
+  max-width: 1760px;
 }
 </style>
