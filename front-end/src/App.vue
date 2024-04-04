@@ -8,14 +8,13 @@
     </div>
 
     <div v-else>
-      <AddressVerifier />
+      <RouterView />
     </div>
   </main>
 </template>
 
 <script setup>
 import { onMounted } from 'vue'
-import AddressVerifier from './AddressVerifier.vue'
 import useCreations from './composables/useCreations'
 
 const {
