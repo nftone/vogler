@@ -29,7 +29,18 @@ def main():
                     "owner": owner,
                     "name": creation["name"],
                     "image": creation["image"],
+                    "inscription": creation["h"],
+                    "description": creation["description"],
+                    "fileUrl": creation["fileUrl"],
+                    "signatureDate": creation["signatureDate"],
+                    "signatureUrl": creation["signatureUrl"],
+                    "inscriptionDate": creation["inscriptionDate"],
+                    "size": creation["size"],
+                    "format": creation["format"],
+                    "license": creation["license"],
+                    "ownerContact": creation["ownerContact"],
                 }
+
                 updated_creations.append(output_creation)
             except APIRequestError as e:
                 print(f"Error: {e}")
