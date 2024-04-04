@@ -28,6 +28,7 @@ def main():
                 output_creation = {
                     "owner": owner,
                     "name": creation["name"],
+                    "slug": creation["slug"],
                     "image": creation["image"],
                     "inscription": creation["h"],
                     "description": creation["description"],
