@@ -1,8 +1,8 @@
 <template>
   <div>
-    <p>This address holds {{ creation.name }}</p>
+    <p class="no-select">This address holds {{ creation.name }}</p>
     <img
-      class="creation-image"
+      class="creation-image no-select"
       :src="`images/works/${creation.image}`"
       :alt="`image of ${creation.name}`"
     />

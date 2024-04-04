@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="no-select">
     <h1>Stephan Vogler Artworks (2015)</h1>
     <h2>Address Verifier</h2>
   </div>
@@ -23,8 +23,8 @@
       />
       <button @click="onClick">Verify</button>
 
-      <GreenCheckmark v-if="foundCreation" />
-      <RedCheckmark v-if="address && !foundCreation" />
+      <GreenCheckmark class="no-select" v-if="foundCreation" />
+      <RedCheckmark class="no-select" v-if="address && !foundCreation" />
     </div>
 
     <Creation v-if="foundCreation" :creation="foundCreation" />

@@ -82,4 +82,12 @@ input[type='text'] + button {
 input[type='text'] + button:hover {
   background-color: #ddd; /* Light gray background on hover */
 }
+
+.no-select {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
 </style>
