@@ -58,5 +58,6 @@ onMounted(async () => {
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   column-gap: 22px;
   max-width: 1760px;
+  margin-top: 1rem;
 }
 </style>
