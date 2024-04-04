@@ -1,13 +1,17 @@
 <template>
-  <div class="creation-tile">
-    <img
-      class="creation-image no-select"
-      :class="{ [className]: true }"
-      :src="`images/works/${creation.image}`"
-      :alt="`image of ${creation.name}`"
-    />
-    <div class="creation-name no-select">{{ creation.name }}</div>
-  </div>
+  <RouterLink :to="`/work/${creation.slug}`">
+    <div class="creation-tile">
+      <img
+        class="creation-image no-select"
+        :class="{ [className]: true }"
+        :src="`images/works/${creation.image}`"
+        :alt="`image of ${creation.name}`"
+      />
+      <div class="creation-name no-select">
+        <span>{{ creation.name }}</span>
+      </div>
+    </div>
+  </RouterLink>
 </template>
 
 <script setup>
@@ -48,6 +52,10 @@ const className = computed(() => {
   text-align: center;
   margin: 0;
   padding: 0;
+}
+
+.creation-tile .creation-name span {
+  color: white;
 }
 
 .plain-border {
