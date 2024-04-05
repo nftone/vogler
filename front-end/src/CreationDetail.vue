@@ -6,6 +6,7 @@
   </div>
 
   <div v-if="creationLoading">Loading...</div>
+
   <template v-else>
     <div v-if="!creation && creations.length && !creationsErrorMessage">
       <h2>Work {{ slug }} not found</h2>
@@ -18,12 +19,31 @@
 
     <div v-else-if="creation" class="creation-detail">
       <h1>{{ creation.name }}</h1>
-      <img
-        class="creation-image no-select"
-        :src="`/images/works/${creation.image}`"
-        :alt="`image of ${creation.name}`"
-      />
-      <!-- {{ creation }} -->
+
+      <div class="creation-detail-body">
+        <img
+          class="creation-image no-select"
+          :src="`/images/works/${creation.image}`"
+          :alt="`image of ${creation.name}`"
+        />
+
+        <div class="properties">
+          <p style="margin-top: 0">Description: {{ creation.description }}</p>
+          <p>Hash/File: {{ fileHash }}</p>
+          <p>Signed: {{ creation.signatureDate }} CEST</p>
+          <p>Inscribed: {{ creation.inscriptionDate }} CEST</p>
+          <p>Format: {{ creation.format }}</p>
+          <p>Size: {{ creation.size }}</p>
+          <p>
+            License:
+            <a href="https://www.stephanvogler.com/en/license/" target="_blank">
+              {{ creation.license }}
+            </a>
+          </p>
+          <p>Owner: {{ creation.owner }}</p>
+          <p>Owner contact: {{ creation.ownerContact }}</p>
+        </div>
+      </div>
     </div>
   </template>
 </template>
@@ -43,6 +63,11 @@ const route = useRoute()
 const slug = computed(() => route.params.slug)
 const creation = ref(null)
 const creationLoading = ref(true)
+const fileHash = computed(() => {
+  if (!creation.value) return ''
+  const fileName = creation.value.signatureUrl.split('/').pop()
+  return fileName.split('.')[0]
+})
 
 onMounted(async () => {
   await refreshCreations({ refreshIfEmpty: true })
@@ -58,9 +83,30 @@ onMounted(async () => {
 }
 
 .creation-detail .creation-image {
-  width: 200px;
-  height: 200px;
+  width: 350px;
+  height: 350px;
   background-color: white;
   image-rendering: pixelated;
+}
+
+.creation-detail .properties p {
+  margin: 6px;
+  font-size: 18px;
+}
+
+.creation-detail .properties a,
+.creation-detail .properties a:link,
+.creation-detail .properties a:visited,
+.creation-detail .properties a:hover,
+.creation-detail .properties a:active,
+.creation-detail .properties a:-webkit-any-link {
+  color: #0081ff;
+  text-decoration: underline;
+}
+
+.creation-detail-body {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 3rem;
 }
 </style>
