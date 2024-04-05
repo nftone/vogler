@@ -29,6 +29,8 @@
         />
         <CreationDetailProperties :creation="creation" />
       </div>
+
+      <CreationDetailTransactionHistory :creation="creation" />
     </div>
   </template>
 </template>
@@ -39,7 +41,9 @@ import { useRoute } from 'vue-router'
 
 import { dashedCreationNames } from './constants/creations'
 import useCreations from './composables/useCreations'
+
 import CreationDetailProperties from './CreationDetailProperties.vue'
+import CreationDetailTransactionHistory from './CreationDetailTransactionHistory.vue'
 
 const {
   creations, //
@@ -84,12 +88,17 @@ onMounted(async () => {
   column-gap: 3rem;
 }
 
-.creation-detail-body .properties a,
-.creation-detail-body .properties a:link,
-.creation-detail-body .properties a:visited,
-.creation-detail-body .properties a:hover,
-.creation-detail-body .properties a:active,
-.creation-detail-body .properties a:-webkit-any-link {
+.creation-detail-body,
+.transaction-history {
+  font-size: 18px;
+}
+
+.initial-link-styling a,
+.initial-link-styling a:link,
+.initial-link-styling a:visited,
+.initial-link-styling a:hover,
+.initial-link-styling a:active,
+.initial-link-styling a:-webkit-any-link {
   color: #0081ff;
   text-decoration: underline;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="properties">
+  <div class="properties initial-link-styling">
     <p style="margin-top: 0">Description: {{ creation.description }}</p>
     <p>
       Hash/File:
@@ -65,6 +65,5 @@ const ownerUrl = computed(() => {
 <style>
 .creation-detail .properties p {
   margin: 6px;
-  font-size: 18px;
 }
 </style>
