@@ -111,7 +111,7 @@ const fileHash = computed(() => {
 })
 
 const inscriptionUrl = computed(() => {
-  return `https://www.blockchain.com/explorer/transactions/btc/${creation.value.h}`
+  return `https://www.blockchain.com/explorer/transactions/btc/${creation.value.inscription}`
 })
 
 const ownerUrl = computed(() => {
