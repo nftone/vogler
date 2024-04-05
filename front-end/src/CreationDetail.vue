@@ -23,6 +23,7 @@
       <div class="creation-detail-body">
         <img
           class="creation-image no-select"
+          :class="{ [className]: true }"
           :src="`/images/works/${creation.image}`"
           :alt="`image of ${creation.name}`"
         />
@@ -51,6 +52,8 @@
 <script setup>
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+
+import { dashedCreationNames } from './constants/creations'
 import useCreations from './composables/useCreations'
 
 const {
@@ -60,9 +63,16 @@ const {
 } = useCreations()
 const route = useRoute()
 
-const slug = computed(() => route.params.slug)
 const creation = ref(null)
 const creationLoading = ref(true)
+
+const slug = computed(() => route.params.slug)
+
+const className = computed(() => {
+  if (dashedCreationNames.includes(creation.value.name)) return 'dashed-border'
+  return 'plain-border'
+})
+
 const fileHash = computed(() => {
   if (!creation.value) return ''
   const fileName = creation.value.signatureUrl.split('/').pop()
