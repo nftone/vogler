@@ -1,10 +1,12 @@
 import json
 from time import sleep
 from datetime import datetime
-import requests
 import threading
+import requests
 
 lock = threading.Lock()
+
+transfer_history = {}
 
 
 class APIRequestError(Exception):
@@ -23,8 +25,10 @@ def main():
         for creation in creations:
             updated_creation_index += 1
             print(f"Processing creation {updated_creation_index}/{len(creations)}")
+
             try:
-                owner = find_owner_by_tx_hash(creation["h"])
+                transfer_history[creation["slug"]] = []
+                owner = find_owner_by_tx_hash(creation["h"], creation["slug"])
                 output_creation = {
                     "owner": owner,
                     "name": creation["name"],
@@ -40,9 +44,11 @@ def main():
                     "format": creation["format"],
                     "license": creation["license"],
                     "ownerContact": creation["ownerContact"],
+                    "history": transfer_history[creation["slug"]],
                 }
 
                 updated_creations.append(output_creation)
+
             except APIRequestError as e:
                 print(f"Error: {e}")
 
@@ -53,19 +59,27 @@ def main():
                 json.dump(output_dict, f, indent=4)
 
 
-def find_owner_by_tx_hash(tx_hash):
+def find_owner_by_tx_hash(tx_hash, creation_slug):
     tx = get_tx_by_hash(tx_hash)
-
     vout = tx["vout"]
 
     for v in vout:
         if v.get("value", 0) > 0:
-            return find_owner_by_address(v.get("scriptpubkey_address"))
+            sender = tx["vin"][0]["prevout"]["scriptpubkey_address"]
+            transfer_history[creation_slug].append(
+                {
+                    "blockTime": tx.get("status").get("block_time"),
+                    "txid": tx.get("txid"),
+                    "sender": sender,
+                    "recipient": v.get("scriptpubkey_address"),
+                }
+            )
+            return find_owner_by_address(v.get("scriptpubkey_address"), creation_slug)
 
     return vout[0]["scriptpubkey_address"]
 
 
-def find_owner_by_address(tx_address):
+def find_owner_by_address(tx_address, creation_slug):
     potential_owner_txs = get_address_transactions(tx_address)
 
     for tx in potential_owner_txs:
@@ -74,7 +88,17 @@ def find_owner_by_address(tx_address):
                 vout.get("value", 0) > 0
                 and vout.get("scriptpubkey_address") != tx_address
             ):
-                return find_owner_by_address(vout["scriptpubkey_address"])
+                transfer_history[creation_slug].append(
+                    {
+                        "blockTime": tx.get("status").get("block_time"),
+                        "txid": tx.get("txid"),
+                        "sender": tx_address,
+                        "recipient": vout.get("scriptpubkey_address"),
+                    }
+                )
+                return find_owner_by_address(
+                    vout["scriptpubkey_address"], creation_slug
+                )
 
     return tx_address
 
