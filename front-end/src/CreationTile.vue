@@ -16,12 +16,12 @@
 
 <script setup>
 import { computed } from 'vue'
+import { dashedCreationNames } from './constants/creations'
 
 const props = defineProps(['creation'])
 
 const className = computed(() => {
-  const dashedCreations = ['Nothing', 'Secret']
-  if (dashedCreations.includes(props.creation.name)) return 'dashed-border'
+  if (dashedCreationNames.includes(props.creation.name)) return 'dashed-border'
   return 'plain-border'
 })
 </script>
@@ -56,13 +56,5 @@ const className = computed(() => {
 
 .creation-tile .creation-name span {
   color: white;
-}
-
-.plain-border {
-  border: 1px solid white;
-}
-
-.dashed-border {
-  border: 1px dashed black;
 }
 </style>

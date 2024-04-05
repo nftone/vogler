@@ -99,4 +99,12 @@ a:-webkit-any-link {
   color: white;
   text-decoration: none;
 }
+
+.plain-border {
+  border: 1px solid white;
+}
+
+.dashed-border {
+  border: 1px dashed black;
+}
 </style>
