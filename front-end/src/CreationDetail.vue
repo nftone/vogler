@@ -27,54 +27,7 @@
           :src="`/images/works/${creation.image}`"
           :alt="`image of ${creation.name}`"
         />
-
-        <div class="properties">
-          <p style="margin-top: 0">Description: {{ creation.description }}</p>
-          <p>
-            Hash/File:
-            <a v-if="creation.fileUrl.startsWith('http')" :href="creation.fileUrl" target="_blank">
-              {{ fileHash }}
-            </a>
-            <template v-else>{{ fileHash }}</template>
-          </p>
-          <p>
-            Signed: {{ creation.signatureDate }} CEST (<a
-              :href="creation.signatureUrl"
-              target="_blank"
-            >
-              {{ creation.signatureUrl }} </a
-            >)
-          </p>
-          <p>
-            Inscribed: {{ creation.inscriptionDate }} CEST (<a
-              :href="inscriptionUrl"
-              target="_blank"
-            >
-              {{ inscriptionUrl }} </a
-            >)
-          </p>
-          <p>Format: {{ creation.format }}</p>
-          <p>Size: {{ creation.size }}</p>
-          <p>
-            License:
-            <a href="https://www.stephanvogler.com/en/license/" target="_blank">
-              {{ creation.license }}
-            </a>
-          </p>
-          <p>
-            Owner: <a :href="ownerUrl" target="_blank">{{ creation.owner }}</a>
-          </p>
-          <p>
-            Owner contact:
-            <a
-              v-if="creation.ownerContact.startsWith('http')"
-              :href="creation.ownerContact"
-              target="_blank"
-              >{{ creation.ownerContact }}</a
-            >
-            <template v-else>{{ creation.ownerContact }}</template>
-          </p>
-        </div>
+        <CreationDetailProperties :creation="creation" />
       </div>
     </div>
   </template>
@@ -86,6 +39,7 @@ import { useRoute } from 'vue-router'
 
 import { dashedCreationNames } from './constants/creations'
 import useCreations from './composables/useCreations'
+import CreationDetailProperties from './CreationDetailProperties.vue'
 
 const {
   creations, //
@@ -102,20 +56,6 @@ const slug = computed(() => route.params.slug)
 const className = computed(() => {
   if (dashedCreationNames.includes(creation.value.name)) return 'dashed-border'
   return 'plain-border'
-})
-
-const fileHash = computed(() => {
-  if (!creation.value) return ''
-  const fileName = creation.value.signatureUrl.split('/').pop()
-  return fileName.split('.')[0]
-})
-
-const inscriptionUrl = computed(() => {
-  return `https://www.blockchain.com/explorer/transactions/btc/${creation.value.inscription}`
-})
-
-const ownerUrl = computed(() => {
-  return `https://www.blockchain.com/explorer/addresses/btc/${creation.value.owner}`
 })
 
 onMounted(async () => {
@@ -138,24 +78,19 @@ onMounted(async () => {
   image-rendering: pixelated;
 }
 
-.creation-detail .properties p {
-  margin: 6px;
-  font-size: 18px;
-}
-
-.creation-detail .properties a,
-.creation-detail .properties a:link,
-.creation-detail .properties a:visited,
-.creation-detail .properties a:hover,
-.creation-detail .properties a:active,
-.creation-detail .properties a:-webkit-any-link {
-  color: #0081ff;
-  text-decoration: underline;
-}
-
 .creation-detail-body {
   display: grid;
   grid-template-columns: auto 1fr;
   column-gap: 3rem;
+}
+
+.creation-detail-body .properties a,
+.creation-detail-body .properties a:link,
+.creation-detail-body .properties a:visited,
+.creation-detail-body .properties a:hover,
+.creation-detail-body .properties a:active,
+.creation-detail-body .properties a:-webkit-any-link {
+  color: #0081ff;
+  text-decoration: underline;
 }
 </style>
