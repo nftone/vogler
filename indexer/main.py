@@ -29,6 +29,7 @@ def main():
             try:
                 transfer_history[creation["slug"]] = []
                 owner = find_owner_by_tx_hash(creation["h"], creation["slug"])
+                print(owner, "OWNER")
                 output_creation = {
                     "owner": owner,
                     "name": creation["name"],
@@ -54,9 +55,12 @@ def main():
 
         output_dict = {"last_update": current_timestamp, "creations": updated_creations}
 
-        with lock:
-            with open("./output.json", "w", encoding="utf-8") as f:
-                json.dump(output_dict, f, indent=4)
+        if updated_creations:
+            with lock:
+                with open("./output.json", "w", encoding="utf-8") as f:
+                    json.dump(output_dict, f, indent=4)
+        else:
+            print("Creation were not updated as the updated object was empty")
 
 
 def find_owner_by_tx_hash(tx_hash, creation_slug):
