@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { dashedCreationNames } from './constants/creations'
@@ -58,15 +58,29 @@ const creationLoading = ref(true)
 const slug = computed(() => route.params.slug)
 
 const className = computed(() => {
+  if (!creation.value) return ''
   if (dashedCreationNames.includes(creation.value.name)) return 'dashed-border'
   return 'plain-border'
 })
 
 onMounted(async () => {
   await refreshCreations({ refreshIfEmpty: true })
-  creation.value = creations.value.find((creation) => creation.slug == slug.value)
-  nextTick(() => (creationLoading.value = false))
 })
+
+// Watch for creations to populate and slug changes, then find the matching creation
+watch(
+  [creations, slug],
+  ([newCreations, newSlug]) => {
+    if (newCreations.length) {
+      const found = newCreations.find((c) => c.slug === newSlug)
+      if (found !== creation.value) {
+        creation.value = found
+        nextTick(() => (creationLoading.value = false))
+      }
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <style>
