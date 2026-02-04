@@ -64,19 +64,35 @@ const className = computed(() => {
 })
 
 onMounted(async () => {
+  console.log('[CreationDetail] onMounted, calling refreshCreations')
   await refreshCreations({ refreshIfEmpty: true })
+  console.log('[CreationDetail] refreshCreations completed')
 })
 
 // Watch for creations to populate and slug changes, then find the matching creation
 watch(
   [creations, slug],
   ([newCreations, newSlug]) => {
+    console.log('[CreationDetail] watch fired:', {
+      creationsLength: newCreations.length,
+      slug: newSlug,
+      creationValue: creation.value
+    })
     if (newCreations.length) {
       const found = newCreations.find((c) => c.slug === newSlug)
+      console.log('[CreationDetail] found:', found ? `${found.name} (${found.slug})` : 'undefined')
       if (found !== creation.value) {
+        console.log('[CreationDetail] setting creation and loading=false')
         creation.value = found
-        nextTick(() => (creationLoading.value = false))
+        nextTick(() => {
+          creationLoading.value = false
+          console.log('[CreationDetail] creationLoading set to false')
+        })
+      } else {
+        console.log('[CreationDetail] found === creation.value, skipping update')
       }
+    } else {
+      console.log('[CreationDetail] creations array is empty, waiting...')
     }
   },
   { immediate: true }
