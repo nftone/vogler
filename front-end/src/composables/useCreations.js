@@ -1,55 +1,23 @@
-import axios from 'axios'
 import { ref } from 'vue'
 
-const creations = ref([])
+import creationsData from '../data/creations.json'
+
+// Asset data is baked into the build at deploy time (src/data/creations.json).
+// It almost never changes, so bundling it removes the runtime dependency on the
+// indexer/API. The page can no longer render a partial list or a spurious
+// "asset not found" because of a flaky or partial fetch — the data is always
+// the complete, validated set that shipped with this build.
+//
+// To refresh the data: re-run the indexer (which writes this file, fail-closed
+// and atomically) then tag a release to redeploy. See indexer/main.py.
+const creations = ref(creationsData.creations ?? [])
 const creationsErrorMessage = ref('')
 const loadingCreations = ref(false)
-let fetchPromise = null
 
 export default function useCreations() {
-  const refreshCreations = async (options = {}) => {
-    console.log('[useCreations] refreshCreations called with options:', options)
-    console.log('[useCreations] current state:', {
-      creationsLength: creations.value.length,
-      loadingCreations: loadingCreations.value,
-      hasFetchPromise: !!fetchPromise
-    })
-
-    if (options.refreshIfEmpty && creations.value.length) {
-      console.log('[useCreations] refreshIfEmpty: creations already loaded, skipping')
-      return
-    }
-
-    // Deduplicate concurrent requests
-    if (fetchPromise) {
-      console.log('[useCreations] fetch already in progress, returning existing promise')
-      return fetchPromise
-    }
-
-    loadingCreations.value = true
-    const url = 'https://api.vogler.nft1.com/'
-    console.log('[useCreations] starting new fetch from:', url)
-
-    fetchPromise = axios
-      .get(url)
-      .then((response) => {
-        console.log('[useCreations] fetch successful, got', response.data.creations.length, 'creations')
-        creations.value = response.data.creations
-        return response
-      })
-      .catch((error) => {
-        console.error('[useCreations] fetch failed:', error)
-        creationsErrorMessage.value = error.message || String(error)
-        throw error
-      })
-      .finally(() => {
-        console.log('[useCreations] fetch complete, setting loadingCreations=false')
-        loadingCreations.value = false
-        fetchPromise = null
-      })
-
-    return fetchPromise
-  }
+  // No-op: data is already present synchronously from the bundle. Kept so the
+  // existing components can keep calling refreshCreations() without changes.
+  const refreshCreations = async () => {}
 
   return {
     creations,

@@ -1,60 +1,69 @@
-# Front-end
+# Vogler
 
-Refer to [front-end README](front-end/README.md)
+Static site presenting Stephan Vogler's artworks, with ownership data anchored
+on the Bitcoin blockchain. The asset set almost never changes (~30 works), so
+the data is **baked into the front-end build** rather than fetched at runtime.
 
-# Indexer
+## Architecture (and why it's reliable now)
 
-## Initial setup
+```
+indexer/main.py  ──(reads)──>  indexer/constants/Creations.json   (source of truth: the works)
+       │                                                          + Bitcoin owner/history (blockstream.info)
+       │  fail-closed + atomic write (only a COMPLETE set is ever published)
+       ▼
+front-end/src/data/creations.json   ──(bundled at build time)──>  front-end/dist  ──>  GitHub Pages
+```
+
+The front-end has **no runtime dependency** on any API. It cannot show a partial
+list or a spurious "asset not found", because the complete, validated data set
+is compiled into the JS bundle that ships with each release.
+
+> Previously the front-end fetched the data live from a Flask API whose
+> `output.json` was rewritten by a cron job every 2 minutes. Any transient
+> blockstream.info failure dropped assets and overwrote the good data with a
+> partial set — the cause of the intermittent "half the assets" / "not found"
+> bugs. That live API and its cron are no longer used and should be retired.
+
+## Front-end
+
+See [front-end/README.md](front-end/README.md). Local dev:
+
+```bash
+cd front-end
+npm ci
+npm run dev
+```
+
+## Refreshing the data (only when assets/owners actually change)
 
 ```bash
 cd indexer
-python -m venv venv
-source venv/bin/activate
+python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
+python main.py            # writes ../front-end/src/data/creations.json
 ```
 
-## Dev
-
-### Start the Flask server
+`main.py` is **fail-closed**: it retries blockstream.info with backoff and only
+writes if it successfully indexes ALL works. On a partial/failed run it exits
+non-zero and leaves the existing data untouched. Then commit + deploy:
 
 ```bash
-cd indexer
-make run
+git add front-end/src/data/creations.json
+git commit -m "data: refresh creations"
+# then deploy (see below)
 ```
 
-## Production
+## Deploying
 
-### Flask app
+Deploy is triggered by pushing a **git tag**. The `CI/CD` GitHub Action
+(`.github/workflows/deploy.yml`) builds `front-end` and publishes `dist/` to the
+`gh-pages` branch, which GitHub Pages serves at `vogler.hnft.wtf` (CNAME).
 
 ```bash
-cd indexer
-gunicorn -w 4 -b 0.0.0.0:8000 api.app:app
+# bump front-end/package.json "version" to match, then:
+git tag 0.4.0
+git push origin 0.4.0
 ```
 
-Example service file
-
-```bash
-[Unit]
-Description=Gunicorn instance for Vogler Indexer API
-After=network.target
-
-[Service]
-User=<user>
-Group=www-data
-WorkingDirectory=/srv/vogler/indexer
-Environment="PATH=/srv/vogler/indexer/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-ExecStart=/srv/vogler/indexer/venv/bin/gunicorn --workers 3 --bind unix:/srv/vogler/indexer/api/app.sock api.app:app
-
-[Install]
-WantedBy=multi-user.target
-```
-
-### Indexer
-
-The indexer is ran using cron
-
-```bash
-sudo apt-get install cron
-crontab -e
-*/2 * * * * /usr/bin/python3 /path/to/main.py
-```
+Requires the `ACTIONS_DEPLOY_ACCESS_TOKEN` repo secret (already configured). The
+deploy step copies `index.html` to `404.html` so SPA deep links resolve.

@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { dashedCreationNames } from './constants/creations'
@@ -45,58 +45,22 @@ import useCreations from './composables/useCreations'
 import CreationDetailProperties from './CreationDetailProperties.vue'
 import CreationDetailTransactionHistory from './CreationDetailTransactionHistory.vue'
 
-const {
-  creations, //
-  creationsErrorMessage,
-  refreshCreations
-} = useCreations()
+const { creations, creationsErrorMessage } = useCreations()
 const route = useRoute()
 
-const creation = ref(null)
-const creationLoading = ref(true)
-
 const slug = computed(() => route.params.slug)
+
+// Data is bundled and always present, so the lookup is synchronous and reactive
+// to slug changes. There is no fetch to miss and no loading race, so the
+// "not found" branch now only ever shows for a genuinely unknown slug.
+const creation = computed(() => creations.value.find((c) => c.slug === slug.value) ?? null)
+const creationLoading = ref(false)
 
 const className = computed(() => {
   if (!creation.value) return ''
   if (dashedCreationNames.includes(creation.value.name)) return 'dashed-border'
   return 'plain-border'
 })
-
-onMounted(async () => {
-  console.log('[CreationDetail] onMounted, calling refreshCreations')
-  await refreshCreations({ refreshIfEmpty: true })
-  console.log('[CreationDetail] refreshCreations completed')
-})
-
-// Watch for creations to populate and slug changes, then find the matching creation
-watch(
-  [creations, slug],
-  ([newCreations, newSlug]) => {
-    console.log('[CreationDetail] watch fired:', {
-      creationsLength: newCreations.length,
-      slug: newSlug,
-      creationValue: creation.value
-    })
-    if (newCreations.length) {
-      const found = newCreations.find((c) => c.slug === newSlug)
-      console.log('[CreationDetail] found:', found ? `${found.name} (${found.slug})` : 'undefined')
-      if (found !== creation.value) {
-        console.log('[CreationDetail] setting creation and loading=false')
-        creation.value = found
-        nextTick(() => {
-          creationLoading.value = false
-          console.log('[CreationDetail] creationLoading set to false')
-        })
-      } else {
-        console.log('[CreationDetail] found === creation.value, skipping update')
-      }
-    } else {
-      console.log('[CreationDetail] creations array is empty, waiting...')
-    }
-  },
-  { immediate: true }
-)
 </script>
 
 <style>
