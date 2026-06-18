@@ -1,10 +1,22 @@
 import json
+import os
+import sys
+import tempfile
 from time import sleep
 from datetime import datetime
-import threading
 import requests
 
-lock = threading.Lock()
+# Where the validated snapshot is written. By default this is the file the
+# front-end bundles at build time, so re-indexing + a release tag is all it
+# takes to publish fresh data. Override with OUTPUT_PATH if needed.
+OUTPUT_PATH = os.environ.get(
+    "OUTPUT_PATH", os.path.join("..", "front-end", "src", "data", "creations.json")
+)
+
+# Transient upstream failures (rate limits, timeouts) are retried before giving
+# up, so a flaky blockstream.info no longer silently drops an asset.
+MAX_RETRIES = 5
+RETRY_BASE_DELAY = 2  # seconds: 2, 4, 8, 16, 32
 
 transfer_history = {}
 
@@ -15,22 +27,20 @@ class APIRequestError(Exception):
 
 def main():
     with open("./constants/Creations.json", "r", encoding="utf-8") as f:
-        creations_json = json.load(f)
-        creations = creations_json["creations"]
+        creations = json.load(f)["creations"]
 
-        updated_creations = []
-        current_timestamp = datetime.now().isoformat()
-        updated_creation_index = 0
+    expected_count = len(creations)
+    updated_creations = []
+    current_timestamp = datetime.now().isoformat()
 
-        for creation in creations:
-            updated_creation_index += 1
-            print(f"Processing creation {updated_creation_index}/{len(creations)}")
-
-            try:
-                transfer_history[creation["slug"]] = []
-                owner = find_owner_by_tx_hash(creation["h"], creation["slug"])
-                print(owner, "OWNER")
-                output_creation = {
+    for index, creation in enumerate(creations, start=1):
+        print(f"Processing creation {index}/{expected_count} ({creation['slug']})")
+        try:
+            transfer_history[creation["slug"]] = []
+            owner = find_owner_by_tx_hash(creation["h"], creation["slug"])
+            print(owner, "OWNER")
+            updated_creations.append(
+                {
                     "owner": owner,
                     "name": creation["name"],
                     "slug": creation["slug"],
@@ -47,20 +57,40 @@ def main():
                     "ownerContact": creation["ownerContact"],
                     "history": transfer_history[creation["slug"]],
                 }
+            )
+        except APIRequestError as e:
+            print(f"Error indexing {creation['slug']}: {e}")
 
-                updated_creations.append(output_creation)
+    # Fail closed: only publish a COMPLETE set. A partial run (the root cause of
+    # "half the assets show" / "asset not found") must never overwrite the last
+    # known-good data. Better to keep serving stale-but-complete data and alert.
+    if len(updated_creations) != expected_count:
+        print(
+            f"ABORT: indexed {len(updated_creations)}/{expected_count} creations. "
+            f"Keeping previous good data, not writing {OUTPUT_PATH}."
+        )
+        sys.exit(1)
 
-            except APIRequestError as e:
-                print(f"Error: {e}")
+    output_dict = {"last_update": current_timestamp, "creations": updated_creations}
+    write_atomic(OUTPUT_PATH, output_dict)
+    print(f"OK: wrote {expected_count}/{expected_count} creations to {OUTPUT_PATH}")
 
-        output_dict = {"last_update": current_timestamp, "creations": updated_creations}
 
-        if updated_creations:
-            with lock:
-                with open("./output.json", "w", encoding="utf-8") as f:
-                    json.dump(output_dict, f, indent=4)
-        else:
-            print("Creation were not updated as the updated object was empty")
+def write_atomic(path, data):
+    """Write JSON via a temp file + atomic rename so a reader never sees a
+    half-written file (and a crash mid-write can't truncate the good data)."""
+    directory = os.path.dirname(os.path.abspath(path))
+    os.makedirs(directory, exist_ok=True)
+    fd, tmp_path = tempfile.mkstemp(dir=directory, suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+        os.replace(tmp_path, path)
+    except BaseException:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+        raise
 
 
 def find_owner_by_tx_hash(tx_hash, creation_slug):
@@ -108,23 +138,34 @@ def find_owner_by_address(tx_address, creation_slug):
 
 
 def get_tx_by_hash(tx_hash):
-    sleep(0.4)
-    url = f"https://blockstream.info/api/tx/{tx_hash}"
-    response = requests.get(url, timeout=10)
-    if response.status_code == 200:
-        return response.json()
-
-    raise APIRequestError(f"API request failed with status code {response.status_code}")
+    return _get_json(f"https://blockstream.info/api/tx/{tx_hash}")
 
 
 def get_address_transactions(address):
-    sleep(0.4)
-    url = f"https://blockstream.info/api/address/{address}/txs"
-    response = requests.get(url, timeout=10)
-    if response.status_code == 200:
-        return response.json()
-
-    raise APIRequestError(f"API request failed with status code {response.status_code}")
+    return _get_json(f"https://blockstream.info/api/address/{address}/txs")
 
 
-main()
+def _get_json(url):
+    """GET with retry + exponential backoff. Raises APIRequestError only after
+    all retries are exhausted, so a brief upstream hiccup self-heals."""
+    last_error = None
+    for attempt in range(MAX_RETRIES):
+        sleep(0.4)  # be polite to the public API
+        try:
+            response = requests.get(url, timeout=10)
+            if response.status_code == 200:
+                return response.json()
+            last_error = f"status {response.status_code}"
+        except requests.RequestException as e:
+            last_error = str(e)
+
+        if attempt < MAX_RETRIES - 1:
+            delay = RETRY_BASE_DELAY * (2**attempt)
+            print(f"  retry {attempt + 1}/{MAX_RETRIES - 1} for {url} ({last_error}) in {delay}s")
+            sleep(delay)
+
+    raise APIRequestError(f"request to {url} failed after {MAX_RETRIES} tries: {last_error}")
+
+
+if __name__ == "__main__":
+    main()

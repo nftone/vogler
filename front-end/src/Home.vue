@@ -19,7 +19,7 @@
     <div class="creations-grid">
       <CreationTile
         v-for="creation in creations"
-        :key="`creation-tile-${creation.h}`"
+        :key="`creation-tile-${creation.slug}`"
         :creation="creation"
       />
     </div>
